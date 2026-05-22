@@ -5,6 +5,20 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # ---------------------------------------------------------------------------
+# デフォルトビルドタイプを Release (-O2) に設定
+# cmake .. だけで呼んだ場合にも最適化が有効になる。
+# ---------------------------------------------------------------------------
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+    message(STATUS "CMAKE_BUILD_TYPE not specified. Defaulting to Release.")
+endif()
+
+# Release フラグを -O2 -DNDEBUG に固定
+# (CMake デフォルトは -O3。picoquic 側の SET(CMAKE_C_FLAGS "... -O2 ...") と
+#  競合しないよう、CMAKE_C_FLAGS_RELEASE で明示的に上書きする)
+set(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG" CACHE STRING "C flags for Release" FORCE)
+
+# ---------------------------------------------------------------------------
 # picotls と picoquic を add_subdirectory で取り込む
 #
 # OpenSSL 不使用: WITH_OPENSSL=OFF
@@ -78,7 +92,9 @@ target_link_libraries(hello_client PRIVATE
 # ---------------------------------------------------------------------------
 message(STATUS "")
 message(STATUS "=== hello_quic ===")
-message(STATUS "  Targets : hello_server, hello_client")
-message(STATUS "  Run server: ./hello_server [port] [cert.pem] [key.pem]")
-message(STATUS "  Run client: ./hello_client [host] [port]")
+message(STATUS "  Build type : ${CMAKE_BUILD_TYPE}")
+message(STATUS "  C flags    : ${CMAKE_C_FLAGS} ${CMAKE_C_FLAGS_RELEASE}")
+message(STATUS "  Targets    : hello_server, hello_client")
+message(STATUS "  Run server : ./hello_server [port] [cert.pem] [key.pem]")
+message(STATUS "  Run client : ./hello_client [host] [port]")
 message(STATUS "")

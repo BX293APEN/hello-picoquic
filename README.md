@@ -45,8 +45,7 @@ sudo apt install -y \
 
 ```bash
 cd hello_quic_project
-cmake -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build -j$(nproc)
+mkdir build && cd build && cmake .. && make -j$(nproc)
 ```
 
 ビルド成果物:
