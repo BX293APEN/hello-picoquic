@@ -58,34 +58,26 @@ list(APPEND CMAKE_MODULE_PATH
 add_subdirectory(picoquic)
 
 # ---------------------------------------------------------------------------
-# サーバー実行ファイル
+# src/ 内の .c ファイルをすべてビルド
+# ファイル名（拡張子なし）をそのままターゲット名にする
 # ---------------------------------------------------------------------------
-add_executable(hello_server src/hello_server.c)
+file(GLOB SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
 
-target_include_directories(hello_server PRIVATE
-    "${CMAKE_CURRENT_SOURCE_DIR}/picoquic/picoquic"
-    "${CMAKE_CURRENT_SOURCE_DIR}/picoquic/loglib"
-)
+foreach(SRC_FILE ${SRC_FILES})
+    get_filename_component(TARGET_NAME ${SRC_FILE} NAME_WE)
 
-target_link_libraries(hello_server PRIVATE
-    picoquic-core
-    picoquic-log
-)
+    add_executable(${TARGET_NAME} ${SRC_FILE})
 
-# ---------------------------------------------------------------------------
-# クライアント実行ファイル
-# ---------------------------------------------------------------------------
-add_executable(hello_client src/hello_client.c)
+    target_include_directories(${TARGET_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/picoquic/picoquic"
+        "${CMAKE_CURRENT_SOURCE_DIR}/picoquic/loglib"
+    )
 
-target_include_directories(hello_client PRIVATE
-    "${CMAKE_CURRENT_SOURCE_DIR}/picoquic/picoquic"
-    "${CMAKE_CURRENT_SOURCE_DIR}/picoquic/loglib"
-)
-
-target_link_libraries(hello_client PRIVATE
-    picoquic-core
-    picoquic-log
-)
+    target_link_libraries(${TARGET_NAME} PRIVATE
+        picoquic-core
+        picoquic-log
+    )
+endforeach()
 
 # ---------------------------------------------------------------------------
 # 便利情報
@@ -94,7 +86,7 @@ message(STATUS "")
 message(STATUS "=== hello_quic ===")
 message(STATUS "  Build type : ${CMAKE_BUILD_TYPE}")
 message(STATUS "  C flags    : ${CMAKE_C_FLAGS} ${CMAKE_C_FLAGS_RELEASE}")
-message(STATUS "  Targets    : hello_server, hello_client")
+message(STATUS "  Targets    : all .c files in src/ (one executable each)")
 message(STATUS "  Run server : ./hello_server [port] [cert.pem] [key.pem]")
 message(STATUS "  Run client : ./hello_client [host] [port]")
 message(STATUS "")
