@@ -1,9 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"D:/WorkSpace/GitHub/hello-picoquic/build/cmake_install.cmake",
-		"D:/WorkSpace/GitHub/hello-picoquic/build/picoquic/cmake_install.cmake",
-		"D:/WorkSpace/GitHub/hello-picoquic/build/_deps/picotls-build/cmake_install.cmake"
-	],
-	"Parallel" : false
-}
