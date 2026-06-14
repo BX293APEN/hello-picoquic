@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/socket.h>   /* AF_INET, AF_INET6 */
+
 
 #include <picoquic.h>
 #include <picoquic_utils.h>

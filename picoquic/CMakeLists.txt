@@ -16,6 +16,7 @@ endif()
 # プラットフォーム別コンパイルフラグ
 # ---------------------------------------------------------------------------
 if(MSVC)
+    # /O2 最適化、/wd4996 非推奨関数警告を抑制
     set(CMAKE_C_FLAGS_RELEASE "/O2 /DNDEBUG /W3 /wd4996"
         CACHE STRING "C flags for Release (MSVC)" FORCE)
 else()
@@ -26,56 +27,40 @@ endif()
 # ---------------------------------------------------------------------------
 # Windows 向け: picotls の CMakeLists.txt パッチ
 #
-# 【問題1】 L12: FIND_PACKAGE(PkgConfig REQUIRED)
-#   Windows に pkg-config がないためエラー → REQUIRED を削除
+# picotls は Linux 前提で書かれており Windows ではそのままビルドできない。
+# FetchContent の「最初の Declare が優先される」仕様を利用して、
+# add_subdirectory(picoquic) より前に PATCH_COMMAND 付きで先行宣言し、
+# ダウンロード直後に CMakeLists.txt を書き換える。
 #
-# 【問題2】 L74-75: PKG_CHECK_MODULES(BROTLI_*)
-#   PkgConfig 未ロード時は未定義コマンド → IF(PkgConfig_FOUND) でガード
-#
-# 【問題3】 picotls.h の L30: #ifdef _WINDOWS → #include "wincompat.h"
-#   wincompat.h は picotls 自身には存在せず picoquic/picoquic/ にある。
-#   picotls の INCLUDE_DIRECTORIES に picoquic/picoquic/ を追加する必要がある。
-#   → INCLUDE_DIRECTORIES ブロックの末尾に追記するパッチを適用。
-#
-# 【解決策】
-#   FetchContent は「最初の FetchContent_Declare が優先される」仕様を利用し、
-#   add_subdirectory(picoquic) より前に PATCH_COMMAND 付きで先行宣言する。
-#   picoquic 内部の FetchContent_Declare(picotls) は後から来るため無視される。
+# パッチ内容:
+#   1. FIND_PACKAGE(PkgConfig REQUIRED) → REQUIRED を削除
+#   2. PKG_CHECK_MODULES(BROTLI_*) → IF(PkgConfig_FOUND) でガード
+#   3. INCLUDE_DIRECTORIES に picoquic/picoquic/ を追加
+#      (picotls.h が _WINDOWS 時に #include "wincompat.h" するが、
+#       wincompat.h は picotls 自身になく picoquic/picoquic/ にある)
 # ---------------------------------------------------------------------------
 if(WIN32)
     include(FetchContent)
 
-    # picoquic/picoquic/ (wincompat.h の場所) への絶対パスを計算
-    set(_picoquic_src_dir "${CMAKE_CURRENT_SOURCE_DIR}/picoquic/picoquic")
+    set(_picoquic_inc "${CMAKE_CURRENT_SOURCE_DIR}/picoquic/picoquic")
+    set(_ptls_patch   "${CMAKE_BINARY_DIR}/patch_picotls_win.cmake")
 
-    # パッチスクリプトをビルドディレクトリに生成
-    set(_ptls_patch_script "${CMAKE_BINARY_DIR}/patch_picotls_win.cmake")
-    file(WRITE "${_ptls_patch_script}" "
-# patch_picotls_win.cmake
-# picotls の CMakeLists.txt に Windows 向け3点パッチを適用する。
-# FetchContent の PATCH_COMMAND から呼ばれる。
-# CMAKE_CURRENT_SOURCE_DIR = <picotls_SOURCE_DIR>
-
+    file(WRITE "${_ptls_patch}" "
 set(_f \"\${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt\")
 if(NOT EXISTS \"\${_f}\")
     message(FATAL_ERROR \"[patch] Not found: \${_f}\")
 endif()
-
 file(READ \"\${_f}\" _src)
-
-# 冪等チェック
 if(_src MATCHES \"__PATCHED_FOR_WINDOWS__\")
-    message(STATUS \"[patch] Already patched. Skipping.\")
+    message(STATUS \"[patch] Already patched.\")
     return()
 endif()
-
-# --- パッチ1: PkgConfig REQUIRED を外す ---
+# パッチ1: REQUIRED を削除
 string(REPLACE
     \"FIND_PACKAGE(PkgConfig REQUIRED)\"
     \"FIND_PACKAGE(PkgConfig) # __PATCHED_FOR_WINDOWS__\"
     _src \"\${_src}\")
-
-# --- パッチ2: PKG_CHECK_MODULES を IF(PkgConfig_FOUND) でガード ---
+# パッチ2: PKG_CHECK_MODULES を IF(PkgConfig_FOUND) でガード
 string(REPLACE
     \"PKG_CHECK_MODULES(BROTLI_DEC libbrotlidec)\"
     \"IF(PkgConfig_FOUND) # __PATCHED_FOR_WINDOWS__\\nPKG_CHECK_MODULES(BROTLI_DEC libbrotlidec)\"
@@ -84,28 +69,22 @@ string(REPLACE
     \"PKG_CHECK_MODULES(BROTLI_ENC libbrotlienc)\"
     \"PKG_CHECK_MODULES(BROTLI_ENC libbrotlienc)\\nENDIF() # __PATCHED_FOR_WINDOWS__\"
     _src \"\${_src}\")
-
-# --- パッチ3: INCLUDE_DIRECTORIES に picoquic/picoquic を追加 ---
-# picotls.h が #ifdef _WINDOWS で wincompat.h を include するが、
-# wincompat.h は picotls 自身に含まれず picoquic/picoquic/ にある。
-# INCLUDE_DIRECTORIES ブロックの末尾 (\${CMAKE_CURRENT_BINARY_DIR}) の後に追加する。
+# パッチ3: INCLUDE_DIRECTORIES に wincompat.h のあるディレクトリを追加
 string(REPLACE
-    \"    \${CMAKE_CURRENT_BINARY_DIR})\"
-    \"    \${CMAKE_CURRENT_BINARY_DIR}\\n    ${_picoquic_src_dir}) # __PATCHED_FOR_WINDOWS__\"
+    \"    \\\${CMAKE_CURRENT_BINARY_DIR})\"
+    \"    \\\${CMAKE_CURRENT_BINARY_DIR}\\n    ${_picoquic_inc}) # __PATCHED_FOR_WINDOWS__\"
     _src \"\${_src}\")
-
 file(WRITE \"\${_f}\" \"\${_src}\")
-message(STATUS \"[patch] picotls CMakeLists.txt: applied 3 Windows patches.\")
+message(STATUS \"[patch] picotls CMakeLists.txt: 3 patches applied.\")
 ")
 
-    # picoquic が使うタグと同じリポジトリを先行宣言 (first-declaration-wins)
     FetchContent_Declare(picotls
         GIT_REPOSITORY https://github.com/h2o/picotls.git
         PATCH_COMMAND  ${CMAKE_COMMAND}
                        "-DCMAKE_CURRENT_SOURCE_DIR=<SOURCE_DIR>"
-                       -P "${_ptls_patch_script}"
+                       -P "${_ptls_patch}"
     )
-    message(STATUS "[win32] picotls FetchContent registered with 3-point Windows patch.")
+    message(STATUS "[win32] picotls FetchContent pre-declared with Windows patches.")
 endif()
 
 # ---------------------------------------------------------------------------
@@ -113,54 +92,58 @@ endif()
 # ---------------------------------------------------------------------------
 set(WITH_OPENSSL         OFF CACHE BOOL   "" FORCE)
 set(PICOQUIC_FETCH_PTLS  ON  CACHE BOOL   "" FORCE)
-
 set(OPENSSL_INCLUDE_DIR  ""  CACHE PATH   "" FORCE)
 set(OPENSSL_LIBRARIES    ""  CACHE STRING "" FORCE)
+set(WITH_FUSION          OFF CACHE BOOL   "" FORCE)
+set(PTLS_WITH_FUSION     OFF CACHE BOOL   "" FORCE)
+set(BUILD_DEMO           OFF CACHE BOOL   "" FORCE)
+set(BUILD_HTTP           OFF CACHE BOOL   "" FORCE)
+set(BUILD_PQBENCH        OFF CACHE BOOL   "" FORCE)
+set(BUILD_LOGLIB         ON  CACHE BOOL   "" FORCE)
+set(BUILD_LOGREADER      OFF CACHE BOOL   "" FORCE)
+set(picoquic_BUILD_TESTS OFF CACHE BOOL   "" FORCE)
+set(BUILD_PICO_SIM       OFF CACHE BOOL   "" FORCE)
 
-set(WITH_FUSION          OFF CACHE BOOL "" FORCE)
-set(PTLS_WITH_FUSION     OFF CACHE BOOL "" FORCE)
-
-set(BUILD_DEMO           OFF CACHE BOOL "" FORCE)
-set(BUILD_HTTP           OFF CACHE BOOL "" FORCE)
-set(BUILD_PQBENCH        OFF CACHE BOOL "" FORCE)
-set(BUILD_LOGLIB         ON  CACHE BOOL "" FORCE)
-set(BUILD_LOGREADER      OFF CACHE BOOL "" FORCE)
-set(picoquic_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(BUILD_PICO_SIM       OFF CACHE BOOL "" FORCE)
-
-list(APPEND CMAKE_MODULE_PATH
-    "${CMAKE_CURRENT_SOURCE_DIR}/picoquic/cmake")
-
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/picoquic/cmake")
 add_subdirectory(picoquic)
 
 # ---------------------------------------------------------------------------
-# src/ 内の .c ファイルをすべてビルド
+# 共通インクルード / リンク設定のヘルパー関数
 # ---------------------------------------------------------------------------
-file(GLOB SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
-
-foreach(SRC_FILE ${SRC_FILES})
-    get_filename_component(TARGET_NAME ${SRC_FILE} NAME_WE)
-
-    add_executable(${TARGET_NAME} ${SRC_FILE})
-
+function(setup_quic_target TARGET_NAME)
     target_include_directories(${TARGET_NAME} PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/picoquic/picoquic"
         "${CMAKE_CURRENT_SOURCE_DIR}/picoquic/loglib"
     )
-
     target_link_libraries(${TARGET_NAME} PRIVATE
         picoquic-core
         picoquic-log
     )
-
+    # Windows: _WINDOWS マクロを定義 (picosocks.h 等の #ifdef _WINDOWS 分岐に必要)
+    #          WinSock2 / BCrypt は明示リンクが必要
     if(WIN32)
-        target_link_libraries(${TARGET_NAME} PRIVATE
-            ws2_32
-            bcrypt
-        )
+        target_compile_definitions(${TARGET_NAME} PRIVATE _WINDOWS)
+        target_link_libraries(${TARGET_NAME} PRIVATE ws2_32 bcrypt)
     endif()
+endfunction()
 
-endforeach()
+# ---------------------------------------------------------------------------
+# ターゲット定義
+#
+# src/*.c を glob で一括ビルドする代わりにターゲットを明示する。
+# これにより不要なファイルを混入させず、各ターゲットの意図が明確になる。
+# ---------------------------------------------------------------------------
+
+# メインサンプル: Hello, World サーバー / クライアント
+add_executable(hello_server src/hello_server.c)
+setup_quic_target(hello_server)
+
+add_executable(hello_client src/hello_client.c)
+setup_quic_target(hello_client)
+
+# 追加サンプル: エコーサーバー (複数ストリーム対応、ALPN="echo", port=7777)
+add_executable(hello_server_loop src/hello_server_loop.c)
+setup_quic_target(hello_server_loop)
 
 # ---------------------------------------------------------------------------
 # 便利情報
@@ -171,12 +154,14 @@ message(STATUS "  Platform   : ${CMAKE_SYSTEM_NAME}")
 message(STATUS "  Compiler   : ${CMAKE_C_COMPILER_ID}")
 message(STATUS "  Build type : ${CMAKE_BUILD_TYPE}")
 message(STATUS "  C flags    : ${CMAKE_C_FLAGS} ${CMAKE_C_FLAGS_RELEASE}")
-message(STATUS "  Targets    : all .c files in src/ (one executable each)")
+message(STATUS "  Targets    : hello_server  hello_client  hello_server_loop")
 if(WIN32)
     message(STATUS "  Run server : build\\Release\\hello_server.exe [port] [cert.pem] [key.pem]")
     message(STATUS "  Run client : build\\Release\\hello_client.exe [host] [port]")
+    message(STATUS "  Run echo   : build\\Release\\hello_server_loop.exe [port] [cert.pem] [key.pem]")
 else()
     message(STATUS "  Run server : ./hello_server [port] [cert.pem] [key.pem]")
     message(STATUS "  Run client : ./hello_client [host] [port]")
+    message(STATUS "  Run echo   : ./hello_server_loop [port] [cert.pem] [key.pem]")
 endif()
 message(STATUS "")
