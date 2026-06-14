@@ -24,89 +24,92 @@ else()
 endif()
 
 # ---------------------------------------------------------------------------
-# Windows 向け: picotls の pkg-config 依存をパッチで除去
+# Windows 向け: picotls の CMakeLists.txt パッチ
 #
-# 【問題】
-#   picotls/CMakeLists.txt には以下の2つの問題がある:
-#     L12: FIND_PACKAGE(PkgConfig REQUIRED)  ← REQUIRED のため pkg-config がないとエラー
-#     L74: PKG_CHECK_MODULES(BROTLI_DEC ...)  ← PkgConfig が未ロードなので未定義コマンド
+# 【問題1】 L12: FIND_PACKAGE(PkgConfig REQUIRED)
+#   Windows に pkg-config がないためエラー → REQUIRED を削除
+#
+# 【問題2】 L74-75: PKG_CHECK_MODULES(BROTLI_*)
+#   PkgConfig 未ロード時は未定義コマンド → IF(PkgConfig_FOUND) でガード
+#
+# 【問題3】 picotls.h の L30: #ifdef _WINDOWS → #include "wincompat.h"
+#   wincompat.h は picotls 自身には存在せず picoquic/picoquic/ にある。
+#   picotls の INCLUDE_DIRECTORIES に picoquic/picoquic/ を追加する必要がある。
+#   → INCLUDE_DIRECTORIES ブロックの末尾に追記するパッチを適用。
 #
 # 【解決策】
-#   FetchContent は「同名の最初の FetchContent_Declare が優先される」仕様のため、
-#   add_subdirectory(picoquic) より前に FetchContent_Declare(picotls) を
-#   PATCH_COMMAND 付きで宣言しておく。
+#   FetchContent は「最初の FetchContent_Declare が優先される」仕様を利用し、
+#   add_subdirectory(picoquic) より前に PATCH_COMMAND 付きで先行宣言する。
 #   picoquic 内部の FetchContent_Declare(picotls) は後から来るため無視される。
-#
-#   PATCH_COMMAND では cmake -P でパッチスクリプトを実行し、
-#   ダウンロード済みの picotls/CMakeLists.txt を書き換える。
-#   パッチは冪等 (__PATCHED_FOR_WINDOWS__ マーカーで二重適用を防止)。
-#
-# 【Linux への影響】
-#   WIN32 ブロック内にのみ記述するため Linux ビルドには一切影響しない。
 # ---------------------------------------------------------------------------
 if(WIN32)
     include(FetchContent)
 
-    # パッチスクリプトをビルドディレクトリに生成
-    set(_ptls_patch_script "${CMAKE_BINARY_DIR}/patch_picotls_pkgconfig.cmake")
-    file(WRITE "${_ptls_patch_script}" [=[
-# patch_picotls_pkgconfig.cmake
-# picotls の CMakeLists.txt から pkg-config 必須依存を除去する。
-# このスクリプトは FetchContent の PATCH_COMMAND から呼ばれる。
-# 作業ディレクトリは <picotls_SOURCE_DIR> になる。
+    # picoquic/picoquic/ (wincompat.h の場所) への絶対パスを計算
+    set(_picoquic_src_dir "${CMAKE_CURRENT_SOURCE_DIR}/picoquic/picoquic")
 
-set(_f "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
-if(NOT EXISTS "${_f}")
-    message(FATAL_ERROR "[patch] Not found: ${_f}")
+    # パッチスクリプトをビルドディレクトリに生成
+    set(_ptls_patch_script "${CMAKE_BINARY_DIR}/patch_picotls_win.cmake")
+    file(WRITE "${_ptls_patch_script}" "
+# patch_picotls_win.cmake
+# picotls の CMakeLists.txt に Windows 向け3点パッチを適用する。
+# FetchContent の PATCH_COMMAND から呼ばれる。
+# CMAKE_CURRENT_SOURCE_DIR = <picotls_SOURCE_DIR>
+
+set(_f \"\${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt\")
+if(NOT EXISTS \"\${_f}\")
+    message(FATAL_ERROR \"[patch] Not found: \${_f}\")
 endif()
 
-file(READ "${_f}" _src)
+file(READ \"\${_f}\" _src)
 
-# 冪等チェック: すでにパッチ済みならスキップ
-if(_src MATCHES "__PATCHED_FOR_WINDOWS__")
-    message(STATUS "[patch] picotls CMakeLists.txt already patched. Skipping.")
+# 冪等チェック
+if(_src MATCHES \"__PATCHED_FOR_WINDOWS__\")
+    message(STATUS \"[patch] Already patched. Skipping.\")
     return()
 endif()
 
-# パッチ1: REQUIRED を外す
+# --- パッチ1: PkgConfig REQUIRED を外す ---
 string(REPLACE
-    "FIND_PACKAGE(PkgConfig REQUIRED)"
-    "FIND_PACKAGE(PkgConfig) # __PATCHED_FOR_WINDOWS__"
-    _src "${_src}")
+    \"FIND_PACKAGE(PkgConfig REQUIRED)\"
+    \"FIND_PACKAGE(PkgConfig) # __PATCHED_FOR_WINDOWS__\"
+    _src \"\${_src}\")
 
-# パッチ2: PKG_CHECK_MODULES を IF(PkgConfig_FOUND) で囲む
-#   対象行 (連続2行):
-#     PKG_CHECK_MODULES(BROTLI_DEC libbrotlidec)
-#     PKG_CHECK_MODULES(BROTLI_ENC libbrotlienc)
+# --- パッチ2: PKG_CHECK_MODULES を IF(PkgConfig_FOUND) でガード ---
 string(REPLACE
-    "PKG_CHECK_MODULES(BROTLI_DEC libbrotlidec)"
-    "IF(PkgConfig_FOUND) # __PATCHED_FOR_WINDOWS__\nPKG_CHECK_MODULES(BROTLI_DEC libbrotlidec)"
-    _src "${_src}")
+    \"PKG_CHECK_MODULES(BROTLI_DEC libbrotlidec)\"
+    \"IF(PkgConfig_FOUND) # __PATCHED_FOR_WINDOWS__\\nPKG_CHECK_MODULES(BROTLI_DEC libbrotlidec)\"
+    _src \"\${_src}\")
 string(REPLACE
-    "PKG_CHECK_MODULES(BROTLI_ENC libbrotlienc)"
-    "PKG_CHECK_MODULES(BROTLI_ENC libbrotlienc)\nENDIF() # __PATCHED_FOR_WINDOWS__"
-    _src "${_src}")
+    \"PKG_CHECK_MODULES(BROTLI_ENC libbrotlienc)\"
+    \"PKG_CHECK_MODULES(BROTLI_ENC libbrotlienc)\\nENDIF() # __PATCHED_FOR_WINDOWS__\"
+    _src \"\${_src}\")
 
-file(WRITE "${_f}" "${_src}")
-message(STATUS "[patch] picotls CMakeLists.txt patched successfully.")
-]=])
+# --- パッチ3: INCLUDE_DIRECTORIES に picoquic/picoquic を追加 ---
+# picotls.h が #ifdef _WINDOWS で wincompat.h を include するが、
+# wincompat.h は picotls 自身に含まれず picoquic/picoquic/ にある。
+# INCLUDE_DIRECTORIES ブロックの末尾 (\${CMAKE_CURRENT_BINARY_DIR}) の後に追加する。
+string(REPLACE
+    \"    \${CMAKE_CURRENT_BINARY_DIR})\"
+    \"    \${CMAKE_CURRENT_BINARY_DIR}\\n    ${_picoquic_src_dir}) # __PATCHED_FOR_WINDOWS__\"
+    _src \"\${_src}\")
 
-    # picoquic が使う picotls のタグ (picoquic の cmake/picotls.cmake 参照)
-    # 空文字にすると HEAD になるため、picoquic のデフォルトタグを踏襲して master を指定
-    # (実際のタグは picoquic の PICOQUIC_FETCH_PTLS_DEFAULT_TAG 変数で決まる)
-    # ここでは GIT_TAG を指定せず GIT_REPOSITORY だけ合わせることで
-    # 「同じリポジトリへの最初の Declare」として picoquic 側を上書きする。
+file(WRITE \"\${_f}\" \"\${_src}\")
+message(STATUS \"[patch] picotls CMakeLists.txt: applied 3 Windows patches.\")
+")
+
+    # picoquic が使うタグと同じリポジトリを先行宣言 (first-declaration-wins)
     FetchContent_Declare(picotls
         GIT_REPOSITORY https://github.com/h2o/picotls.git
         PATCH_COMMAND  ${CMAKE_COMMAND}
                        "-DCMAKE_CURRENT_SOURCE_DIR=<SOURCE_DIR>"
                        -P "${_ptls_patch_script}"
     )
-    message(STATUS "[win32] Registered picotls FetchContent with PATCH_COMMAND.")
+    message(STATUS "[win32] picotls FetchContent registered with 3-point Windows patch.")
 endif()
 
 # ---------------------------------------------------------------------------
-# picotls と picoquic を add_subdirectory で取り込む
+# picotls / picoquic オプション
 # ---------------------------------------------------------------------------
 set(WITH_OPENSSL         OFF CACHE BOOL   "" FORCE)
 set(PICOQUIC_FETCH_PTLS  ON  CACHE BOOL   "" FORCE)
@@ -150,7 +153,6 @@ foreach(SRC_FILE ${SRC_FILES})
         picoquic-log
     )
 
-    # Windows: WinSock2 / BCrypt は明示リンクが必要
     if(WIN32)
         target_link_libraries(${TARGET_NAME} PRIVATE
             ws2_32
