@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\WorkSpace\GitHub\hello-picoquic\build\CMakeFiles\2f60ebaecb872b6c7095b1c6e78fa5d8\NightlyMemoryCheck.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\WorkSpace\GitHub\hello-picoquic\build\picoquic\CMakeFiles\NightlyMemoryCheck" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{357C8592-41D8-3243-ABBA-AABECBFB21EE}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

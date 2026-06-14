@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\loglib\autoqlog.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\loglib\cidset.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\loglib\csv.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\loglib\logconvert.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\loglib\logreader.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\loglib\memory_log.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\loglib\qlog.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\loglib\qlog_frames.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\loglib\qlog_fns.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\loglib\svg.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{EBF0F067-351A-32E1-9324-7358ABA706FE}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

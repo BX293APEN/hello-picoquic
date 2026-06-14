@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-subbuild\CMakeFiles\4850f8be03a2a5c2dc316f1b74282708\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{897B80F0-4377-3216-B4DC-4C24846E9133}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

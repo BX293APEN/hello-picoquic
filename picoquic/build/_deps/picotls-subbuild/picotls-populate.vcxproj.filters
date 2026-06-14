@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-subbuild\CMakeFiles\7bbe9ae17b6205ecc40ecb5fc5c518eb\picotls-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-subbuild\CMakeFiles\7bbe9ae17b6205ecc40ecb5fc5c518eb\picotls-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-subbuild\CMakeFiles\7bbe9ae17b6205ecc40ecb5fc5c518eb\picotls-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-subbuild\CMakeFiles\7bbe9ae17b6205ecc40ecb5fc5c518eb\picotls-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-subbuild\CMakeFiles\7bbe9ae17b6205ecc40ecb5fc5c518eb\picotls-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-subbuild\CMakeFiles\7bbe9ae17b6205ecc40ecb5fc5c518eb\picotls-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-subbuild\CMakeFiles\7bbe9ae17b6205ecc40ecb5fc5c518eb\picotls-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-subbuild\CMakeFiles\7bbe9ae17b6205ecc40ecb5fc5c518eb\picotls-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-subbuild\CMakeFiles\5020ef957f5db3f56c32bf63ed3eda5a\picotls-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-subbuild\CMakeFiles\4850f8be03a2a5c2dc316f1b74282708\picotls-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-subbuild\CMakeFiles\picotls-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{897B80F0-4377-3216-B4DC-4C24846E9133}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

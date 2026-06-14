@@ -1,0 +1,3 @@
+D:/WorkSpace/GitHub/hello-picoquic/build/_deps/picotls-subbuild/CMakeFiles/picotls-populate.dir
+D:/WorkSpace/GitHub/hello-picoquic/build/_deps/picotls-subbuild/CMakeFiles/ALL_BUILD.dir
+D:/WorkSpace/GitHub/hello-picoquic/build/_deps/picotls-subbuild/CMakeFiles/ZERO_CHECK.dir

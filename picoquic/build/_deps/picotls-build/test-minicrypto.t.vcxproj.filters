@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\deps\micro-ecc\uECC.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\deps\cifra\src\aes.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\deps\cifra\src\blockwise.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\deps\cifra\src\chacha20.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\deps\cifra\src\chash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\deps\cifra\src\curve25519.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\deps\cifra\src\drbg.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\deps\cifra\src\hmac.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\deps\cifra\src\gcm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\deps\cifra\src\gf128.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\deps\cifra\src\modes.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\deps\cifra\src\poly1305.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\deps\cifra\src\sha256.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\deps\cifra\src\sha512.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\deps\picotest\picotest.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\t\hpke.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\t\picotls.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\t\quiclb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\t\minicrypto.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\lib\asn1.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\lib\pembase64.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\lib\ffx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\lib\cifra\x25519.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\lib\cifra\chacha20.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\lib\cifra\aes128.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\lib\cifra\aes256.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\lib\cifra\random.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\WorkSpace\GitHub\hello-picoquic\build\_deps\picotls-src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{EBF0F067-351A-32E1-9324-7358ABA706FE}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

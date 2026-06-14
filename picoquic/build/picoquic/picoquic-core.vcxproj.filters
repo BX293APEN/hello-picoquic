@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\bbr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\bbr1.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\bytestream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\cc_common.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\config.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\cubic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\c4.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\dualq_aqm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\ech.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\error_names.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\fastcc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\frames.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\frame_names.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\intformat.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\logger.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\logwriter.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\loss_recovery.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\newreno.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\pacing.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\packet.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\packet_names.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\paths.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\performance_log.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picohash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_lb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_ptls_fusion.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_ptls_minicrypto.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_ptls_openssl.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_mbedtls.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picosocks.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picosplay.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\port_blocking.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\prague.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\qmux.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\quicctx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\register_all_cc_algorithms.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\sacks.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\sender.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\sim_link.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\siphash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\sockloop.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\spinbit.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\ticket_store.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\timing.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\token_store.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\tls_api.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\tp_names.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\transport.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\unified_log.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\util.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picosocks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_packet_loop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_lb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_newreno.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_cubic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_bbr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_bbr1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquictest_dualq.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_fastcc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_prague.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\c4.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\siphash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\bytestream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\cc_common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\cidset.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\performance_log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picohash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_binlog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_crypto_provider_api.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_logger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_set_binlog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_set_textlog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picoquic_unified_log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\picosplay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\tls_api.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\picoquic\wincompat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\WorkSpace\GitHub\hello-picoquic\picoquic\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{66B1E2AF-1913-3799-8F42-4C0132F19D30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{EBF0F067-351A-32E1-9324-7358ABA706FE}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
