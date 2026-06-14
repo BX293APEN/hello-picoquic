@@ -5,7 +5,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # ---------------------------------------------------------------------------
-# デフォルトビルドタイプを Release (-O2) に設定
+# デフォルトビルドタイプを Release に設定
 # cmake .. だけで呼んだ場合にも最適化が有効になる。
 # ---------------------------------------------------------------------------
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -13,10 +13,32 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     message(STATUS "CMAKE_BUILD_TYPE not specified. Defaulting to Release.")
 endif()
 
-# Release フラグを -O2 -DNDEBUG に固定
-# (CMake デフォルトは -O3。picoquic 側の SET(CMAKE_C_FLAGS "... -O2 ...") と
-#  競合しないよう、CMAKE_C_FLAGS_RELEASE で明示的に上書きする)
-set(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG" CACHE STRING "C flags for Release" FORCE)
+# ---------------------------------------------------------------------------
+# プラットフォーム別コンパイルフラグ
+#
+# Windows (MSVC) は -O2 ではなく /O2 を使う。
+# GCC/Clang 系 (Linux / MinGW) は -O2 -DNDEBUG。
+# ---------------------------------------------------------------------------
+if(MSVC)
+    # MSVC: /O2 最適化、/W3 警告レベル、/wd4996 非推奨関数警告を抑制
+    set(CMAKE_C_FLAGS_RELEASE "/O2 /DNDEBUG /W3 /wd4996"
+        CACHE STRING "C flags for Release (MSVC)" FORCE)
+else()
+    # GCC / Clang (Linux, MinGW-w64 など)
+    set(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG"
+        CACHE STRING "C flags for Release" FORCE)
+endif()
+
+# ---------------------------------------------------------------------------
+# Windows 向け: pkg-config が存在しない環境でのエラーを回避
+#
+# picotls の CMakeLists.txt は find_package(PkgConfig) を呼ぶが、
+# Windows には pkg-config がないため CMake エラーになる。
+# CMAKE_DISABLE_FIND_PACKAGE_PkgConfig=ON でその検索自体をスキップさせる。
+# ---------------------------------------------------------------------------
+if(WIN32)
+    set(CMAKE_DISABLE_FIND_PACKAGE_PkgConfig ON CACHE BOOL "" FORCE)
+endif()
 
 # ---------------------------------------------------------------------------
 # picotls と picoquic を add_subdirectory で取り込む
@@ -77,6 +99,20 @@ foreach(SRC_FILE ${SRC_FILES})
         picoquic-core
         picoquic-log
     )
+
+    # -----------------------------------------------------------------------
+    # Windows 向け追加リンク設定
+    #
+    # picoquic は内部で WinSock2 / BCrypt を使用するが、
+    # MSVC 環境では自動リンクされないことがある。
+    # -----------------------------------------------------------------------
+    if(WIN32)
+        target_link_libraries(${TARGET_NAME} PRIVATE
+            ws2_32      # WinSock2 (ソケット API)
+            bcrypt      # BCrypt  (乱数生成 / 暗号プリミティブ)
+        )
+    endif()
+
 endforeach()
 
 # ---------------------------------------------------------------------------
@@ -84,9 +120,20 @@ endforeach()
 # ---------------------------------------------------------------------------
 message(STATUS "")
 message(STATUS "=== hello_quic ===")
+message(STATUS "  Platform   : ${CMAKE_SYSTEM_NAME}")
+message(STATUS "  Compiler   : ${CMAKE_C_COMPILER_ID}")
 message(STATUS "  Build type : ${CMAKE_BUILD_TYPE}")
-message(STATUS "  C flags    : ${CMAKE_C_FLAGS} ${CMAKE_C_FLAGS_RELEASE}")
+if(MSVC)
+    message(STATUS "  C flags    : ${CMAKE_C_FLAGS} ${CMAKE_C_FLAGS_RELEASE}")
+else()
+    message(STATUS "  C flags    : ${CMAKE_C_FLAGS} ${CMAKE_C_FLAGS_RELEASE}")
+endif()
 message(STATUS "  Targets    : all .c files in src/ (one executable each)")
-message(STATUS "  Run server : ./hello_server [port] [cert.pem] [key.pem]")
-message(STATUS "  Run client : ./hello_client [host] [port]")
+if(WIN32)
+    message(STATUS "  Run server : hello_server.exe [port] [cert.pem] [key.pem]")
+    message(STATUS "  Run client : hello_client.exe [host] [port]")
+else()
+    message(STATUS "  Run server : ./hello_server [port] [cert.pem] [key.pem]")
+    message(STATUS "  Run client : ./hello_client [host] [port]")
+endif()
 message(STATUS "")
