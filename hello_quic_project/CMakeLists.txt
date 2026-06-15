@@ -86,7 +86,7 @@ function(picoquic_apply_common_settings target)
         C_EXTENSIONS ON)
     target_compile_definitions(${target} PRIVATE ${PROJECT_COMPILE_DEFINITIONS})
     if(MSVC)
-        target_compile_options(${target} PRIVATE /wd4100 /wd4204 /wd4996)
+        target_compile_options(${target} PRIVATE /wd4100 /wd4204 /wd4996 /utf-8)
     else()
         target_compile_options(${target} PRIVATE -Wall)
     endif()
@@ -210,6 +210,13 @@ set(PICOQUIC_LIBRARY_FILES
     unified_log.c
     util.c)
 list(TRANSFORM PICOQUIC_LIBRARY_FILES PREPEND ${PICOQUIC_SRC_DIR}/)
+
+if(WIN32)
+    # Provides wintimeofday(), the implementation behind the
+    # "#define gettimeofday wintimeofday" in wincompat.h. Referenced from
+    # picotls.c (get_time) as well as from picoquic-core itself.
+    list(APPEND PICOQUIC_LIBRARY_FILES ${PICOQUIC_SRC_DIR}/wintimeofday.c)
+endif()
 
 add_library(picoquic-core STATIC ${PICOQUIC_LIBRARY_FILES})
 
