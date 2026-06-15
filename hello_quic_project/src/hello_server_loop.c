@@ -308,8 +308,8 @@ static int echo_server_callback(
 int main(int argc, char *argv[])
 {
     int         server_port = DEFAULT_PORT;
-    const char *cert_file   = "certs/cert.pem";
-    const char *key_file    = "certs/key.pem";
+    const char *cert_file   = "certs/certificate.crt";
+    const char *key_file    = "certs/private.key";
 
     if (argc >= 2) server_port = atoi(argv[1]);
     if (argc >= 3) cert_file   = argv[2];
