@@ -1,204 +1,73 @@
-# hello_quic
+# hello-picoquic
 
-picoquic + picotls (minicrypto) を使った最小の QUIC "Hello, World!" サンプル。
+[picoquic](https://github.com/private-octopus/picoquic) と [picotls](https://github.com/h2o/picotls) のソースを取り込み、外部ライブラリに依存せず単独でビルドできるようにしたサンプルプロジェクトです。
 
-- **OpenSSL 不使用** (picotls の minicrypto バックエンドのみ)
-- **H3 / QPACK 不使用** (生 QUIC ストリームで直接テキストを送受信)
-- **ビルドシステム**: CMake (依存ライブラリは FetchContent で自動取得)
-
----
+- OpenSSL / mbedTLS は使用せず、picotls 内蔵の **minicrypto**（cifra + micro-ecc による純Cの暗号実装）のみを TLS バックエンドとして使用します。
+- Windows / Linux のどちらでも、追加の暗号ライブラリをインストールせずにビルドできます。Raspberry Pi などの ARM 系 Linux でも同じ手順でビルド可能です。
+- 実行ファイルは可能な範囲で静的リンクされます（Windows: `/MT`、Linux: `-static-libgcc -static-libstdc++`、任意で完全静的リンクも可能）。
 
 ## ディレクトリ構成
 
 ```
-hello_quic_project/
-├── CMakeLists.txt          # トップレベル CMake
-├── README.md
-├── certs/
-│   ├── cert.pem            # テスト用自己署名証明書
-│   └── key.pem             # テスト用秘密鍵
-├── picoquic/               # picoquic ソース (add_subdirectory)
-│   └── ...                 # picotls は picoquic が FetchContent で取得
-└── src/
-    ├── hello_server.c      # サーバー
-    └── hello_client.c      # クライアント
+.
+├── CMakeLists.txt      # トップレベルのビルド定義（ここだけで全体をビルドします）
+├── src/                 # サンプルアプリ
+├── picoquic/
+│   ├── picoquic/        # picoquic 本体のソース (picoquic-core)
+│   ├── loglib/          # qlog などのログ関連 (picoquic-log)
+│   └── picohttp/        # HTTP/3, WebTransport など (picohttp-core)
+└── picotls/
+    ├── include/, lib/   # picotls 本体 (picotls-core)
+    └── deps/            # cifra, micro-ecc (picotls-minicrypto)
 ```
 
----
+## 必要環境
 
-## ビルド
+- CMake 3.13 以降
+- C/C++ コンパイラ
+  - Linux: GCC または Clang
+  - Windows: Visual Studio (MSVC)
+- スレッドライブラリ（Linux は pthread。CMake が自動検出します）
 
-### Linux (Ubuntu / Debian)
+外部ライブラリ（OpenSSL, mbedTLS など）のインストールは不要です。
 
-#### 依存パッケージのインストール
+## ビルド方法 (Windows)
 
-```bash
-sudo apt update
-sudo apt install -y cmake git build-essential pkg-config
-# OpenSSL は不要です
+Visual Studio のコマンドプロンプト（または "Developer Command Prompt for VS"）から実行してください。
+
+```bat
+mkdir build
+cd build
+cmake .. -G "Visual Studio 17 2022" -A x64
+cmake --build . --config Release
 ```
 
-> picotls および picotls の依存ライブラリ (cifra, micro-ecc) は
-> CMake の FetchContent / add_subdirectory で自動的に取得・ビルドされます。
+実行ファイルは `build\Release\` 以下に生成されます。MSVC のランタイムは静的 (`/MT`) にリンクされるため、配布時に VC++ 再頒布可能パッケージは不要です。
 
-#### ビルド手順
+## ビルド方法 (Linux / Raspberry Pi 等)
 
 ```bash
-cd hello_quic_project
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j$(nproc)
 ```
 
-ビルド成果物:
+実行ファイル（`hello`, `hello_client`, `hello_server`, `hello_server_loop`, `main`）が `build/` 直下に生成されます。
 
-| ファイル | 説明 |
-|---|---|
-| `build/hello_server` | QUIC サーバー |
-| `build/hello_client` | QUIC クライアント |
-
----
-
-### Windows (Visual Studio / MSVC)
-
-#### 必要なもの
-
-| ツール | 入手先 |
-|---|---|
-| CMake 3.16 以上 | https://cmake.org/download/ |
-| Visual Studio 2019 以上 | Build Tools (C++ ワークロード) で可 |
-| Git | https://git-scm.com/ |
-
-> **pkg-config は不要です。** CMakeLists.txt 側で Windows 環境での
-> pkg-config 検索を自動スキップするよう設定済みです。
-
-#### ビルド手順
-
-`Developer Command Prompt for VS` またはターミナル上で実行します。
-
-```bat
-cd hello_quic_project
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-cmake --build . --config Release
-```
-
-`-DCMAKE_BUILD_TYPE=Release` を指定することで MSVC の `/O2` 最適化が有効になります。
-
-ビルド成果物:
-
-| ファイル | 説明 |
-|---|---|
-| `build\Release\hello_server.exe` | QUIC サーバー |
-| `build\Release\hello_client.exe` | QUIC クライアント |
-
----
-
-## 実行
-
-### Linux
-
-#### 1. サーバーを起動
+完全に静的なバイナリ（libc も含めて静的リンク）を作りたい場合は、CMake の構成時に以下を追加してください。
 
 ```bash
-cd hello_quic_project
-./build/hello_server 4433 certs/cert.pem certs/key.pem
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_FULLY_STATIC=ON
 ```
 
-引数省略時のデフォルト (ポート 4433、`certs/cert.pem`, `certs/key.pem`):
+Raspberry Pi 上でビルドする場合も、クロスコンパイル用のツールチェインファイルを指定する以外は同じ手順です。
 
 ```bash
-./build/hello_server
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=<your-arm-toolchain>.cmake
+make -j$(nproc)
 ```
 
-#### 2. 別ターミナルでクライアントを実行
+## 補足
 
-```bash
-./build/hello_client 127.0.0.1 4433
-```
-
----
-
-### Windows
-
-#### 1. サーバーを起動
-
-```bat
-cd hello_quic_project
-build\Release\hello_server.exe 4433 certs\cert.pem certs\key.pem
-```
-
-引数省略時のデフォルト (ポート 4433、`certs\cert.pem`, `certs\key.pem`):
-
-```bat
-build\Release\hello_server.exe
-```
-
-#### 2. 別ターミナルでクライアントを実行
-
-```bat
-build\Release\hello_client.exe 127.0.0.1 4433
-```
-
----
-
-### 期待されるサーバー出力
-
-```
-Starting Hello-QUIC server on port 4433
-[server] connection almost ready.
-[server] connection ready.
-[server] received 4 bytes on stream 0: Hi!
-[server] sent "Hello, World!\n"
-[server] connection closed.
-```
-
-### 期待されるクライアント出力
-
-```
-Connecting to 127.0.0.1:4433
-[client] packet loop ready.
-[client] connection almost ready.
-[client] connection ready. Opening stream...
-[client] sent "Hi!\n"
-[client] received 14 bytes (fin): Hello, World!
-[client] stream fin received. Closing connection.
-Client exiting, ret=0
-```
-
----
-
-## 仕組み
-
-1. **クライアント**が QUIC 接続を確立する。
-2. `picoquic_callback_ready` イベントで双方向ストリームを開き、`"Hi!\n"` を送信 (FIN 付き)。
-3. **サーバー**がストリームの FIN を受信し、`"Hello, World!\n"` を返す (FIN 付き)。
-4. **クライアント**がサーバーの FIN を受け取り、接続を閉じる。
-
-TLS ハンドシェイクには picotls の minicrypto バックエンドを使用しており、
-AES-GCM/ChaCha20-Poly1305 および P-256/X25519 鍵交換を OpenSSL なしで実現しています。
-
----
-
-## カスタム証明書の生成
-
-付属の `certs/` にはテスト用の自己署名証明書が同梱されています。
-新たに生成したい場合:
-
-**Linux:**
-```bash
-openssl req -x509 -newkey rsa:2048 -keyout certs/key.pem \
-    -out certs/cert.pem -days 3650 -nodes \
-    -subj "/CN=localhost"
-```
-
-**Windows:**
-```bat
-openssl req -x509 -newkey rsa:2048 -keyout certs\key.pem ^
-    -out certs\cert.pem -days 3650 -nodes ^
-    -subj "/CN=localhost"
-```
-
-> クライアントは `picoquic_set_null_verifier()` で証明書検証を無効化しているため、
-> 自己署名証明書でそのまま動作します。本番環境では検証を有効にしてください。
+- `hello_server` / `hello_server_loop` はデフォルトで `certs/cert.pem`, `certs/key.pem` を読み込みます。サーバを起動する場合は、minicrypto で読み込み可能な証明書・秘密鍵ファイルを別途用意し、コマンドライン引数で指定してください。
+- TLS バックエンドは minicrypto 固定です（`CMakeLists.txt` 内で `PTLS_WITHOUT_OPENSSL` / `PTLS_WITHOUT_FUSION` を定義し、OpenSSL・mbedTLS・x86 専用の Fusion AES-GCM 実装を無効化しています）。
