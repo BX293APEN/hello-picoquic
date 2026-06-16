@@ -292,6 +292,13 @@ static int echo_server_callback(
 
     case picoquic_callback_ready:
         printf("[server] connection ready. Waiting for echo requests...\n");
+        /*
+         * Keep-Alive を有効化する。
+         * interval=0 を指定すると idle_timeout/2 の間隔で PING を送る。
+         * idle_timeout は picoquic_create() 後に 120秒 を設定するので、
+         * ここでは 60秒 ごとに PING が自動送信される。
+         */
+        picoquic_enable_keep_alive(cnx, 0);
         break;
 
     default:
@@ -340,6 +347,15 @@ int main(int argc, char *argv[])
                         " Check cert/key paths.\n");
         return 1;
     }
+
+    /*
+     * Idle timeout をデフォルト (30秒) から 2分 (120,000ms) に延長する。
+     * QUIC の idle_timeout はネゴシエーション時に両端の最小値が採用されるため、
+     * クライアント側も十分な値を設定している必要がある。
+     * サーバー側で Keep-Alive PING を送ることで、クライアントの idle_timeout が
+     * 短くても接続を維持できる。
+     */
+    picoquic_set_default_idle_timeout(quic, 120000 /* ms = 2分 */);
 
     /* デフォルトコンテキストを識別用マーカーとしてセット */
     echo_server_ctx_t default_marker = {0};
